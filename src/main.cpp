@@ -1,28 +1,34 @@
 #include <Arduino.h>
 #include <TFT_eSPI.h>
+#include <SPI.h>
+#include <WiFi.h>
+
+const char* ssid = "Redmi Note 10";
+const char* password = "";
 
 TFT_eSPI tft = TFT_eSPI(); // Instância do display
 
 void setup()
 {
-  Serial.println("INICIANDO.....");
-  Serial.begin(115200);
-  tft.init();                // Inicializa o display
-  tft.setRotation(1);        // Define a orientação do display
-  tft.fillScreen(TFT_BLACK); // Limpa a tela com preto
+  tft.init();
+  tft.setRotation(1);
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextSize(50);
+  WiFi.begin(ssid, password);
+  tft.setTextSize(2);
+  tft.print("Connecting to WiFi");
 
-  // Exibe texto na tela
-  tft.setTextColor(TFT_WHITE, TFT_BLACK); // Cor do texto e do fundo
-  tft.setTextSize(2);                     // Tamanho do texto
-  tft.setCursor(10, 10);                  // Posição inicial
-  tft.println("Teste ST7789!");
-  Serial.println("Finalizado setup.....");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(100);
+    tft.print(".");
+  }
+
+  tft.print("\nOK! IP=");
+  tft.println(WiFi.localIP());
 }
+
 
 void loop()
 {
-  // Desenha um círculo vermelho em uma posição aleatória
-  Serial.println("Rodand");
-  tft.fillCircle(random(20, 150), random(20, 300), 10, TFT_RED);
-  delay(500);
+  delay(1000);
 }
